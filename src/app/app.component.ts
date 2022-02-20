@@ -31,6 +31,8 @@ export class AppComponent implements OnInit {
     this.getAllProducts();
   }
 
+  
+
   getAllProducts(){
     this.api.getProduct().subscribe({
       next:(res)=>{
@@ -48,8 +50,16 @@ export class AppComponent implements OnInit {
 
   announceSortChange(sortState: Sort) {
     this.dataSource.sort = this.sort;        
-    
   }
+
+  applyFilter(event: Event){
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+    
+    if(this.dataSource.paginator){
+      this.dataSource.paginator.firstPage();
+    }
+    }
 
 
   openDialog() {
@@ -63,4 +73,5 @@ export class AppComponent implements OnInit {
  
 
   }
+  
 }
