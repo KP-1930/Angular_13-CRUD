@@ -16,7 +16,7 @@ import {MatSort, Sort} from '@angular/material/sort';
 export class AppComponent implements OnInit {
   title = 'Angular13Crud';
 
-  displayedColumns: string[] = ['productName', 'category', 'date','freshness', 'price','comment'];
+  displayedColumns: string[] = ['productName', 'category', 'date','freshness', 'price','comment','action'];
   dataSource !: MatTableDataSource<any>;
 
   @ViewChild(MatPaginator) paginator !: MatPaginator;
@@ -47,6 +47,30 @@ export class AppComponent implements OnInit {
     })
   }
 
+  editProduct(row : any){
+    this.dialog.open(DialogComponent,{
+      width : '30%',
+      data : row
+    }).afterClosed().subscribe(val=>{
+      if(val == 'update'){
+          this.getAllProducts();
+      }
+    })
+  }
+
+  deleteProduct(id : number){
+    this.api.deleteProduct(id).subscribe({
+      next:(res)=>{
+        alert('Product Deleted SuccessFully');
+        this.getAllProducts();
+      },
+      error:()=>{
+        alert("Error While Deleting product...");
+      }
+    })
+
+  }
+
 
   announceSortChange(sortState: Sort) {
     this.dataSource.sort = this.sort;        
@@ -65,11 +89,15 @@ export class AppComponent implements OnInit {
   openDialog() {
     const dialogRef = this.dialog.open(DialogComponent,{
       width:'30%'
+    }).afterClosed().subscribe(val=>{
+      if(val == "save"){
+        this.getAllProducts();
+      }
     });
 
-    dialogRef.afterClosed().subscribe(result => {
-      console.log(`Dialog result: ${result}`);
-    });
+    // dialogRef.afterClosed().subscribe(result => {
+    //   console.log(`Dialog result: ${result}`);
+    // });
  
 
   }
